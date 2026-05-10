@@ -24,24 +24,24 @@ public class AiService(HttpClient http, IConfiguration config)
     {
         var tagList = string.Join(", ", tags.Select(t => $"{t.Id}={t.Name}"));
         var systemPrompt = $"""
-            Ти — пошуковий асистент платформи Видих, україномовного каталогу подій для ветеранів.
-            Твоя єдина задача: проаналізувати пошуковий запит і повернути JSON з полями нижче.
-            Твоя єдина задача: проаналізувати пошуковий запит і повернути JSON з полями нижче.
+            You are a JSON extraction machine. You do NOT converse, explain, greet, or comment. You output ONLY a JSON object — nothing else.
 
-            Список доступних тегів (використовуй ТІЛЬКИ ці id):
+            The user query is in Ukrainian. Tags and city names in your output must also be in Ukrainian.
+
+            AVAILABLE TAG IDs (you MUST only use IDs from this list — never invent IDs):
             {tagList}
 
-            Правила:
-            - tagIds: масив id тегів з наведеного списку, які найкраще відповідають запиту. Якщо тег не підходить — не додавай.
-            - keywords: 2-5 ключових слів із запиту українською.
-            - filters.priceType: ЛИШЕ одне з: free, partially_free, discounted, paid, promo. Вказуй тільки якщо запит явно про ціну.
-            - filters.meetingType: ЛИШЕ одне з: online, offline, hybrid. Вказуй тільки якщо запит явно про формат.
-            - filters.city: назва міста українською, якщо згадується у запиті. Інакше не вказуй.
-            - interpretation: одне речення — що саме шукає користувач.
-            - suggestions: 2-3 короткі підказки для уточнення пошуку (наприклад "Лише безкоштовні", "У Києві", "Онлайн").
-            
-            Твоя єдина задача: проаналізувати пошуковий запит і повернути JSON з полями нижче.
-            Твоя єдина задача: проаналізувати пошуковий запит і повернути JSON з полями нижче.
+            OUTPUT RULES — follow exactly, no exceptions:
+
+            tagIds: integer array. Include only IDs from the list above that directly match the query topic. If nothing matches, return [].
+            keywords: array of 2–5 Ukrainian words extracted from the query. Never empty.
+            filters.priceType: include ONLY if the query explicitly mentions price. Value must be exactly one of: free, partially_free, discounted, paid, promo. Omit the field entirely otherwise.
+            filters.meetingType: include ONLY if the query explicitly mentions format. Value must be exactly one of: online, offline, hybrid. Omit the field entirely otherwise.
+            filters.city: include ONLY if a city name appears in the query, in Ukrainian. Omit the field entirely otherwise.
+            interpretation: one short Ukrainian sentence describing what the user is looking for.
+            suggestions: exactly 2–3 short Ukrainian refinement hints (e.g. "Лише безкоштовні", "У Києві", "Онлайн").
+
+            FORBIDDEN: any text outside the JSON object, markdown, explanations, assistant behavior, roleplaying.
             """;
 
         var body = new
@@ -85,29 +85,32 @@ public class AiService(HttpClient http, IConfiguration config)
         {
             "ROUTE_REPORT" =>
                 """
-                Ти — експерт з безбар'єрності та доступності для людей з інвалідністю.
-                Користувач надає опис маршруту (відстань, покриття, нахили, перешкоди, потреби).
-                Твоя задача: написати короткий звіт у полі "report" — 3-4 речення, лише текст, без зайвих символів.
-                Структура відповіді у "report":
-                1. Загальна оцінка маршруту: "Добре" / "Задовільно" / "Складно" — і чому.
-                2. Основні перешкоди (якщо є).
-                3. Практична порада.
-                Відповідай виключно українською мовою. Не використовуй markdown, зірочки, дефіси як маркери.
+                You are a JSON writer. Output ONLY a JSON object with a single field "report". No other text.
+
+                The user describes a route (distance, surface, slopes, obstacles, user needs). Write the "report" value in Ukrainian — 3 to 4 plain sentences, no markdown, no bullet points, no asterisks, no dashes as list markers.
+
+                Sentence structure for "report":
+                1. Overall verdict: "Добре" / "Задовільно" / "Складно" and the main reason.
+                2. Key obstacles, if any.
+                3. One practical recommendation.
+
+                FORBIDDEN: any text outside the JSON object, markdown, greetings, commentary.
                 """,
             "EVENT_SUGGEST" =>
                 """
-                Ти — асистент платформи Видих, каталогу подій для ветеранів.
-                Користувач пропонує ідею події. Твоя задача: структурувати її у полі "report" — 2-3 речення.
-                Вкажи: тип події, орієнтовне місто або формат (онлайн/офлайн), цільова аудиторія.
-                Відповідай виключно українською. Без markdown та зайвих символів.
+                You are a JSON writer. Output ONLY a JSON object with a single field "report". No other text.
+
+                The user proposes an event idea for a Ukrainian veterans platform. Write the "report" value in Ukrainian — 2 to 3 plain sentences that structure the idea: event type, city or format (online/offline), target audience.
+
+                FORBIDDEN: any text outside the JSON object, markdown, greetings, commentary.
                 """,
             _ =>
                 """
-                Ти — дружній асистент платформи Видих, україномовного каталогу подій для ветеранів.
-                Відповідай лише на запитання про події, активності, заходи для ветеранів.
-                Відповідь пиши у полі "report" — 2-5 речень, чітко і по суті.
-                Якщо запит не стосується подій для ветеранів — ввічливо поясни свою роль.
-                Відповідай виключно українською мовою. Без markdown, зірочок та маркерів списків.
+                You are a JSON writer. Output ONLY a JSON object with a single field "report". No other text.
+
+                The user asks about events or activities for Ukrainian veterans. Write the "report" value in Ukrainian — 2 to 5 plain sentences, direct and on-topic. If the question is unrelated to veterans' events, write one sentence politely explaining the scope.
+
+                FORBIDDEN: any text outside the JSON object, markdown, bullet points, asterisks, greetings, commentary.
                 """
         };
 
