@@ -28,6 +28,11 @@ var builder = WebApplication.CreateBuilder(args);
 
 builder.Services.AddOpenApi();
 
+builder.Services.AddCors(opt => opt.AddDefaultPolicy(p =>
+    p.WithOrigins("https://dist-sandy-eight-22.vercel.app")
+     .AllowAnyHeader()
+     .AllowAnyMethod()));
+
 var connString = builder.Configuration.GetConnectionString("DefaultConnection")
     ?? throw new InvalidOperationException("ConnectionStrings:DefaultConnection is not configured.");
 builder.Services.AddDbContext<HcktnContext>(opt => opt.UseNpgsql(connString));
@@ -109,6 +114,7 @@ app.UseExceptionHandler(errApp => errApp.Run(async ctx =>
 }));
 
 app.UseHttpsRedirection();
+app.UseCors();
 app.UseAuthentication();
 app.UseAuthorization();
 
