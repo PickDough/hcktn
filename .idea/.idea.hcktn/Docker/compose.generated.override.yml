@@ -1,0 +1,21 @@
+# This is a generated file. Not intended for manual editing.
+services:
+  hcktn:
+    build:
+      context: "/Users/user/Documents/hcktn/hcktn"
+      dockerfile: "Dockerfile"
+      target: "base"
+    command: []
+    entrypoint:
+    - "dotnet"
+    - "/app/bin/Debug/net10.0/hcktn.dll"
+    environment:
+      ASPNETCORE_ENVIRONMENT: "Development"
+      DOTNET_USE_POLLING_FILE_WATCHER: "true"
+    image: "hcktn:dev"
+    ports: []
+    volumes:
+    - "/Users/user/Documents/hcktn/hcktn:/app:rw"
+    - "/Users/user/Documents/hcktn/hcktn:/src:rw"
+    - "/Users/user/.nuget/packages:/home/app/.nuget/packages"
+    working_dir: "/app"
