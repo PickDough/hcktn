@@ -1,9 +1,3 @@
 namespace hcktn.src.domain;
 
-public enum Price
-{
-    Free,
-    Promo,
-    Paid,
-    FreeForVeterans
-}
+public record Price(string PriceType, uint? PriceValue, string? PriceNotes);

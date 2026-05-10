@@ -12,4 +12,5 @@ public interface IOrganisationRepository
     Organisation Validate(ValidateOrganisationCommand command);
     (OrganisationCredentialsDb Creds, OrganisationDb Org)? FindCredentialsByLogin(string login);
     OrganisationDb? FindById(uint id);
+    Organisation? GetById(uint id);
 }

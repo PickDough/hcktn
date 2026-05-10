@@ -48,4 +48,10 @@ public class OrganisationRepository(HcktnContext context, IMapper mapper) : IOrg
 
     public OrganisationDb? FindById(uint id) =>
         context.Organisations.Find(id);
+
+    public Organisation? GetById(uint id)
+    {
+        var org = context.Organisations.Find(id);
+        return org is null ? null : mapper.Map<Organisation>(org);
+    }
 }

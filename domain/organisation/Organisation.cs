@@ -5,5 +5,8 @@ public record Organisation(
     string Name,
     string Phone,
     string ContactInfo,
-    ValidationStatus Status
+    ValidationStatus Status,
+    string? ContactAddress,
+    bool IsVeteran,
+    string? ProfilePhoto
 );

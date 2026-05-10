@@ -8,6 +8,8 @@ public class TagProfile : Profile
 {
     public TagProfile()
     {
-        CreateMap<TagDb, Tag>();
+        CreateMap<TagDb, Tag>()
+            .ConstructUsing(src => new Tag(src.Id, src.Name, src.Color))
+            .ForAllMembers(opt => opt.Ignore());
     }
 }

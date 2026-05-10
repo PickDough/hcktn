@@ -10,6 +10,9 @@ public class HcktnContext(DbContextOptions<HcktnContext> options) : DbContext(op
     public DbSet<EventDb> Events { get; set; }
     public DbSet<EventTagDb> EventTags { get; set; }
     public DbSet<EventImageDb> EventImages { get; set; }
+    public DbSet<PriceDb> Prices { get; set; }
+    public DbSet<RegistrationDb> Registrations { get; set; }
+    public DbSet<SuggestionDb> Suggestions { get; set; }
     public DbSet<AdminDb> Admins { get; set; }
     public DbSet<OrganisationCredentialsDb> OrganisationCredentials { get; set; }
 

@@ -1,6 +1,3 @@
-using hcktn.domain.tag;
-using hcktn.src.domain;
-
 namespace hcktn.application.command.createEvent;
 
 public record CreateEventCommand(
@@ -9,8 +6,21 @@ public record CreateEventCommand(
     List<string> Images,
     List<uint> Tags,
     uint IdCity,
-    Price Price,
+    string PriceType,
+    uint? PriceValue,
+    string? PriceNotes,
     uint IdOrganisation,
     DateTime StartDate,
-    DateTime EndDate
+    DateTime EndDate,
+    string MeetingType,
+    string? GoogleMeetUrl,
+    string Recurrence,
+    uint? Capacity,
+    bool TransferAvailable,
+    string? TransferDetails,
+    string[] InclusivityIds,
+    string? BarrierFreeUrl,
+    double? Latitude,
+    double? Longitude,
+    string? Address
 );

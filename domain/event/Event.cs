@@ -12,5 +12,15 @@ public record Event(
     Price Price,
     uint IdOrganisation,
     DateTime StartDate,
-    DateTime EndDate
+    DateTime EndDate,
+    string MeetingType,
+    string? GoogleMeetUrl,
+    string Recurrence,
+    uint? Capacity,
+    uint RegisteredCount,
+    bool TransferAvailable,
+    string? TransferDetails,
+    string[] InclusivityIds,
+    string? BarrierFreeUrl,
+    DateTime CreatedAt
 );

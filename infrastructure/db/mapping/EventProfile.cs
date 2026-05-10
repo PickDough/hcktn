@@ -11,16 +11,32 @@ public class EventProfile : Profile
     {
         CreateMap<EventDb, Event>()
             .ConstructUsing((src, ctx) => new Event(
-                (uint)src.Id,
+                src.Id,
                 src.Title,
                 src.Description,
                 src.Images.Select(i => i.Url).ToList(),
                 src.Tags.Select(t => ctx.Mapper.Map<Tag>(t.Tag)).ToList(),
-                src.City != null ? new Location(new City((uint)src.City.Id, src.City.Name)) : null,
-                src.Price,
-                (uint)src.IdOrganisation,
+                src.City != null ? new Location(
+                    new City(src.City.Id, src.City.Name),
+                    src.Latitude ?? 0,
+                    src.Longitude ?? 0,
+                    src.Address ?? string.Empty,
+                    src.LocationLink
+                ) : null,
+                new Price(src.Price.PriceType, src.Price.PriceValue, src.Price.PriceNotes),
+                src.IdOrganisation,
                 src.StartDate,
-                src.EndDate
+                src.EndDate,
+                src.MeetingType,
+                src.GoogleMeetUrl,
+                src.Recurrence,
+                src.Capacity,
+                (uint)src.Registrations.Count,
+                src.TransferAvailable,
+                src.TransferDetails,
+                src.InclusivityIds,
+                src.BarrierFreeUrl,
+                src.CreatedAt
             ))
             .ForAllMembers(opt => opt.Ignore());
     }

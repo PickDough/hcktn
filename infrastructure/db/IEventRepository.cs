@@ -8,4 +8,6 @@ public interface IEventRepository
 {
     Event Create(CreateEventCommand createEvent);
     List<Event> List(ListEventQuery query);
+    Event? GetById(uint id);
+    List<Event> Search(string query);
 }

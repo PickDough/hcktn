@@ -9,4 +9,7 @@ public class OrganisationDb
     public string Phone { get; set; } = string.Empty;
     public string ContactInfo { get; set; } = string.Empty;
     public ValidationStatus Status { get; set; }
+    public string? ContactAddress { get; set; }
+    public bool IsVeteran { get; set; }
+    public string? ProfilePhoto { get; set; }
 }
