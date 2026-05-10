@@ -20,7 +20,7 @@ public class EventRepositoryImpl(HcktnContext context, IMapper mapper) : IEventR
         if (query.IdCity.HasValue)
             q = q.Where(e => e.CityId == query.IdCity.Value);
 
-        if (query.IdTags.Count > 0)
+        if (query.IdTags is { Count: > 0 })
             q = q.Where(e => e.Tags.Any(et => query.IdTags.Contains(et.TagId)));
 
         return q.Take((int)query.Limit)

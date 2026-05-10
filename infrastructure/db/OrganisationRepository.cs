@@ -3,6 +3,7 @@ using hcktn.application.command.registerOrganisation;
 using hcktn.application.command.validateOrganisation;
 using hcktn.domain.organisation;
 using hcktn.infrastructure.db.context;
+using Microsoft.EntityFrameworkCore;
 
 namespace hcktn.infrastructure.db;
 
@@ -36,4 +37,15 @@ public class OrganisationRepository(HcktnContext context, IMapper mapper) : IOrg
         context.SaveChanges();
         return mapper.Map<Organisation>(org);
     }
+
+    public (OrganisationCredentialsDb Creds, OrganisationDb Org)? FindCredentialsByLogin(string login)
+    {
+        var creds = context.OrganisationCredentials
+            .Include(c => c.Organisation)
+            .FirstOrDefault(c => c.Login == login);
+        return creds is null ? null : (creds, creds.Organisation);
+    }
+
+    public OrganisationDb? FindById(uint id) =>
+        context.Organisations.Find(id);
 }
