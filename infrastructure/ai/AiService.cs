@@ -6,7 +6,7 @@ namespace hcktn.infrastructure.ai;
 
 public class AiService(HttpClient http, IConfiguration config)
 {
-    private static readonly string Model = "gemini-3.0-flash";
+    private static readonly string Model = "gemini-2.5-flash";
 
     private string ApiKey => config["Gemini:ApiKey"]
         ?? throw new InvalidOperationException("Gemini:ApiKey is not configured. Set the Gemini__ApiKey environment variable.");
