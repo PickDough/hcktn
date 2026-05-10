@@ -41,6 +41,21 @@ public class AiService(HttpClient http, IConfiguration config)
             interpretation: one short Ukrainian sentence describing what the user is looking for.
             suggestions: exactly 2–3 short Ukrainian refinement hints (e.g. "Лише безкоштовні", "У Києві", "Онлайн").
 
+            1. "interpretation" — 1 речення, як ти зрозумів запит. Наприклад: "Ви
+            шукаєте безкоштовну спокійну активність у Києві."
+            2. "tagIds" — масив id тегів з доступних, які підходять до запиту. Обирай
+             розумно: "хочу щось спокійне" → теги йоги, арт-терапії, книг. "Активний
+            відпочинок" → спорт, велосипед, похід.
+            3. "keywords" — масив 3-6 ключових слів українською для додаткового
+            пошуку по назвах та описах подій.
+            4. "filters" — об'єкт з опціональними полями:
+               - "priceType": "free" або "paid" (тільки якщо користувач вказав)
+               - "meetingType": "online", "offline" або "hybrid" (тільки якщо
+            вказано)
+               - "city": назва міста (тільки якщо вказано)
+            5. "suggestions" — 2-4 короткі фрази для уточнення. Наприклад: ["Лише
+            безкоштовні", "У Києві", "На вихідних"].
+
             FORBIDDEN: any text outside the JSON object, markdown, explanations, assistant behavior, roleplaying.
             """;
 
