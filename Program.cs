@@ -1,5 +1,6 @@
 using System.Security.Claims;
 using System.Text;
+using hcktn.application.command.aiQuery;
 using hcktn.application.command.createEvent;
 using hcktn.application.command.createSuggestion;
 using hcktn.application.command.loginAdmin;
@@ -13,6 +14,7 @@ using hcktn.application.query.listCity;
 using hcktn.application.query.listEvent;
 using hcktn.application.query.listTag;
 using hcktn.application.query.searchEvent;
+using hcktn.infrastructure.ai;
 using hcktn.infrastructure.auth;
 using hcktn.infrastructure.db;
 using hcktn.infrastructure.db.context;
@@ -26,12 +28,14 @@ var builder = WebApplication.CreateBuilder(args);
 
 builder.Services.AddOpenApi();
 
-builder.Services.AddDbContext<HcktnContext>(opt =>
-    opt.UseNpgsql(builder.Configuration.GetConnectionString("DefaultConnection")));
+var connString = builder.Configuration.GetConnectionString("DefaultConnection")
+    ?? throw new InvalidOperationException("ConnectionStrings:DefaultConnection is not configured.");
+builder.Services.AddDbContext<HcktnContext>(opt => opt.UseNpgsql(connString));
 
 builder.Services.AddAutoMapper(cfg => cfg.AddMaps(typeof(Program).Assembly));
 
-var jwtSecret = builder.Configuration["Jwt:Secret"]!;
+var jwtSecret = builder.Configuration["Jwt:Secret"]
+    ?? throw new InvalidOperationException("Jwt:Secret is not configured. Set the Jwt__Secret environment variable.");
 builder.Services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
     .AddJwtBearer(opt =>
     {
@@ -59,6 +63,8 @@ builder.Services.AddScoped<IEventRepository, EventRepositoryImpl>();
 builder.Services.AddScoped<IAdminRepository, AdminRepository>();
 builder.Services.AddScoped<ISuggestionRepository, SuggestionRepository>();
 builder.Services.AddScoped<TokenService>();
+builder.Services.AddHttpClient<AiService>();
+builder.Services.AddScoped<AiQueryHandler>();
 
 builder.Services.AddScoped<ListCityHandler>();
 builder.Services.AddScoped<ListTagHandler>();
@@ -189,6 +195,9 @@ app.MapPost("/api/suggestions", (CreateSuggestionHandler handler, [FromBody] Cre
     handler.Handle(command);
     return Results.Ok();
 });
+
+app.MapPost("/api/ai/query", async (AiQueryHandler handler, [FromBody] AiQueryCommand command) =>
+    await handler.Handle(command));
 
 app.Run();
 
